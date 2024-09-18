@@ -17,9 +17,20 @@
    <img src="https://repobeats.axiom.co/api/embed/daa8cec2ba278a52221262d351608a77db29feaf.svg">
 </p>
 
-## Sp4m.wtf | Usage
+## Sp4m.wtf | Usage 
 
 For start using Sp4m.wtf, use the loadstring below:
 ```lua
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/HSp4m/rbx-scr.wtf/main/loader.brainfuck", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/HSp4m/rbx-scr.wtf/main/loader.brainfuck", true))()
 ```
+![Discord](https://img.shields.io/discord/1262898120598224987?style=flat&logo=discord&logoColor=%23FFF&label=discord&color=%237785cc&cacheSeconds=5&link=https%3A%2F%2Fdiscord.gg%2FxHjRajafpj)
+
+## Games Supported
+    • Arsenal
+    • Legends of speed
+    • Enforcement Fps
+    • Natural Disaster
+    • Ninja Legends
+    • Counter Blox (and variants)
+    • Universal
+    • (...)
