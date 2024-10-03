@@ -1,5 +1,5 @@
 local MacLib = { Options = {}, Folder = "Maclib" }
-
+-- Fixed Dropdown Issue (prob)
 --// Services
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -2529,9 +2529,9 @@ function MacLib:Window(Settings)
 						waitTime = 1
 					}
 					
-					local function Toggle(optionName, State)
+					local function Toggle(optionName, State, cfgOverride)
 						local option = OptionObjs[optionName]
-
+            local cfgOverride = cfgOverride or false
 						if not option then return end
 
 						local checkmark = option.Checkmark
@@ -2542,8 +2542,8 @@ function MacLib:Window(Settings)
 								if not table.find(Selected, optionName) then
 									table.insert(Selected, optionName)
 									DropdownFunctions.Value = Selected
-                  if DropdownFunctions.Callback then
-                    DropdownFunctions.Callback(Selected[1] or nil)
+                  if DropdownFunctions.Callback and cfgOverride then
+                    DropdownFunctions.Callback(Selected)
                   end
 								end
 							else
@@ -2560,7 +2560,7 @@ function MacLib:Window(Settings)
 								end
 								Selected = {optionName}
 								DropdownFunctions.Value = Selected[1]
-                if DropdownFunctions.Callback then
+                if DropdownFunctions.Callback and cfgOverride then
                   DropdownFunctions.Callback(Selected[1] or nil)
                 end
 							end
@@ -2579,9 +2579,6 @@ function MacLib:Window(Settings)
 								end
 							else
 								Selected = {}
-                if DropdownFunctions.Callback then
-                  DropdownFunctions.Callback(Selected[1] or nil)
-                end
 							end
 							Tween(checkmark, TweenInfo.new(tweensettings.duration, tweensettings.easingStyle), {
 								Size = UDim2.new(checkmark.Size.X.Scale, tweensettings.checkSizeDecrease, checkmark.Size.Y.Scale, checkmark.Size.Y.Offset)
@@ -2806,17 +2803,17 @@ function MacLib:Window(Settings)
 						if type(newSelection) == "number" then
 							for option, data in pairs(OptionObjs) do
 								local isSelected = data.Index == newSelection
-								Toggle(option, isSelected)
+								Toggle(option, isSelected, true)
 							end
 						elseif type(newSelection) == "string" then
 							for option, data in pairs(OptionObjs) do
 								local isSelected = option == newSelection
-								Toggle(option, isSelected)
+								Toggle(option, isSelected, true)
 							end
 						elseif type(newSelection) == "table" then
 							for option, _ in pairs(OptionObjs) do
 								local isSelected = table.find(newSelection, option) ~= nil
-								Toggle(option, isSelected)
+								Toggle(option, isSelected, true)
 							end
 						end
             
