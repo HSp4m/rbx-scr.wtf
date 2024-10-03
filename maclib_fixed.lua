@@ -1,5 +1,5 @@
 local MacLib = { Options = {}, Folder = "Maclib" }
--- Fixed Dropdown Issue (prob)
+-- Fixed the toggle issue (prob)
 --// Services
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -1731,7 +1731,7 @@ function MacLib:Window(Settings)
 					end
 					function ToggleFunctions:UpdateState(State)
 						togglebool = State
-            
+            ToggleState(togglebool)
 						if ToggleFunctions.Callback then
 							ToggleFunctions.Callback(togglebool)
 						end
