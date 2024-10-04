@@ -1,5 +1,5 @@
 return {
-  LOADER_version = "0.2.9",
+  LOADER_version = "0.3.0",
   LOADER_update_message = "This message will not be update anymore",
   Games = {
     ["0"] = {
