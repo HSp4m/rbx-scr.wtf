@@ -1,5 +1,5 @@
 local MacLib = { Options = {}, Folder = "Maclib" }
--- Fixed the toggle issue (prob)
+-- Added the ability to use mouse keybinds and removed the notification when toggling the menu
 --// Services
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -2263,6 +2263,8 @@ function MacLib:Window(Settings)
 
 					binderBox.Parent = keybind
 
+					local mousebutton1secure = 0
+
 					local focused
 					local binded = Settings.Default
 					if binded then
@@ -2279,6 +2281,7 @@ function MacLib:Window(Settings)
 					UserInputService.InputEnded:Connect(function(inp)
 						if macLib ~= nil then
 							if focused and inp.KeyCode.Name ~= "Unknown" then
+								mousebutton1secure = 0
 								binded = inp.KeyCode
 								KeybindFunctions.Bind = binded
 								binderBox.Text = inp.KeyCode.Name
@@ -2287,7 +2290,48 @@ function MacLib:Window(Settings)
 									KeybindFunctions.onBinded(binded)
 								end
 							elseif inp.KeyCode == binded then
+								mousebutton1secure = 0
 								if KeybindFunctions.Callback then
+									KeybindFunctions.Callback(binded)
+								end
+							end
+							if focused and inp.UserInputType.Name ~= "None" then
+								if inp.UserInputType == Enum.UserInputType.MouseButton1 then
+									mousebutton1secure = mousebutton1secure + 1
+
+									if mousebutton1secure == 2 then
+										mousebutton1secure = 0
+										binded = inp.UserInputType
+										KeybindFunctions.Bind = binded
+										binderBox.Text = inp.UserInputType.Name
+										binderBox:ReleaseFocus()
+										if KeybindFunctions.onBinded then
+											KeybindFunctions.onBinded(binded)
+										end
+									else
+										WindowFunctions:Notify({
+											Title = "Keybind",
+											Description = "Please confirm the mousebutton1 keybind.",
+											Lifetime = 3
+										})
+									end
+
+								else
+										mousebutton1secure = 0
+										binded = inp.UserInputType
+										KeybindFunctions.Bind = binded
+										binderBox.Text = inp.UserInputType.Name
+										binderBox:ReleaseFocus()
+										if KeybindFunctions.onBinded then
+											KeybindFunctions.onBinded(binded)
+										end
+								end
+
+								
+								
+							elseif inp.UserInputType == binded then
+								if KeybindFunctions.Callback then
+									mousebutton1secure = 0
 									KeybindFunctions.Callback(binded)
 								end
 							end
@@ -5140,11 +5184,6 @@ function MacLib:Window(Settings)
 	local function ToggleMenu()
 		local state = not WindowFunctions:GetState()
 		WindowFunctions:SetState(state)
-		WindowFunctions:Notify({
-			Title = Settings.Title,
-			Description = (state and "Maximized " or "Minimized ") .. "the menu. Use " .. tostring(MenuKeybind.Name) .. " to toggle it.",
-			Lifetime = 5
-		})
 	end
 
 	UserInputService.InputEnded:Connect(function(inp, gpe)
