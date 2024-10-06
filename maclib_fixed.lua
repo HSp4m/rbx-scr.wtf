@@ -1,5 +1,5 @@
 local MacLib = { Options = {}, Folder = "Maclib" }
--- Fixed Keybind onBinded func
+-- Fixed cfg issue with keybinds
 --// Services
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -2180,7 +2180,7 @@ function MacLib:Window(Settings)
 				end
 
 				function SectionFunctions:Keybind(Settings, Flag)
-					local KeybindFunctions = { IgnoreConfig = false, Class = "Keybind", Callback = Settings.Callback, onBinded = Settings.onBinded }
+					local KeybindFunctions = { IgnoreConfig = false, Class = "Keybind", Callback = Settings.Callback, onBinded = Settings.onBinded, NIGGERFIXTHEBIND = Enum.UserInputType.MouseButton2 }
 					local keybind = Instance.new("Frame")
 					keybind.Name = "Keybind"
 					keybind.AutomaticSize = Enum.AutomaticSize.Y
@@ -2284,7 +2284,7 @@ function MacLib:Window(Settings)
 								if inp.KeyCode.Name ~= "Unknown" then
 									mousebutton1secure = 0
 									binded = inp.KeyCode
-									KeybindFunctions.Bind = binded
+									KeybindFunctions.NIGGERFIXTHEBIND = binded
 									binderBox.Text = inp.KeyCode.Name
 									binderBox:ReleaseFocus()
 									if KeybindFunctions.onBinded then
@@ -2297,7 +2297,7 @@ function MacLib:Window(Settings)
 											if mousebutton1secure == 2 then
 												mousebutton1secure = 0
 												binded = inp.UserInputType
-												KeybindFunctions.Bind = binded
+												KeybindFunctions.NIGGERFIXTHEBIND = binded
 												binderBox.Text = inp.UserInputType.Name
 												binderBox:ReleaseFocus()
 												if KeybindFunctions.onBinded then
@@ -2313,7 +2313,7 @@ function MacLib:Window(Settings)
 										else
 											mousebutton1secure = 0
 											binded = inp.UserInputType
-											KeybindFunctions.Bind = binded
+											KeybindFunctions.NIGGERFIXTHEBIND = binded
 											binderBox.Text = inp.UserInputType.Name
 											binderBox:ReleaseFocus()
 											if KeybindFunctions.onBinded then
@@ -2330,7 +2330,7 @@ function MacLib:Window(Settings)
 					function KeybindFunctions:Bind(Key)
 						binded = Key
 						binderBox.Text = Key.Name
-						KeybindFunctions.Bind = binded
+						KeybindFunctions.NIGGERFIXTHEBIND = binded
             if KeybindFunctions.onBinded then
 							KeybindFunctions.onBinded(binded) -- * Updated
 						end
@@ -5293,13 +5293,16 @@ function MacLib:Window(Settings)
 				return {
 					type = "Keybind", 
 					flag = Flag, 
-					bind = (typeof(data.Bind) == "EnumItem" and data.Bind.Name) or nil
+					bind = data.NIGGERFIXTHEBIND.Name
 				}
 			end,
 			Load = function(Flag, data)
+				for i,v in next, data do
+				end
 				if MacLib.Options[Flag] and data.bind then
-					local testBind = Enum.KeyCode[data.bind]
-					if testBind then
+					local isValidKeyCode, isKeyCode = pcall(function() return Enum.KeyCode[bind] end)
+					
+					if isValidKeyCode and isKeyCode then
 						MacLib.Options[Flag]:Bind(Enum.KeyCode[data.bind])
 					else
 						MacLib.Options[Flag]:Bind(Enum.UserInputType[data.bind])
@@ -5385,7 +5388,6 @@ function MacLib:Window(Settings)
 		for flag, option in next, MacLib.Options do
 			if not ClassParser[option.Class] then continue end
 			if option.IgnoreConfig then continue end
-
 			table.insert(data.objects, ClassParser[option.Class].Save(flag, option))
 		end	
 
