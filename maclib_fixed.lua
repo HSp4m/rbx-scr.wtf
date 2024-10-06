@@ -1,5 +1,5 @@
 local MacLib = { Options = {}, Folder = "Maclib" }
--- Added the ability to use mouse keybinds and removed the notification when toggling the menu
+-- Fixed Keybind onBinded func
 --// Services
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -2180,7 +2180,7 @@ function MacLib:Window(Settings)
 				end
 
 				function SectionFunctions:Keybind(Settings, Flag)
-					local KeybindFunctions = { IgnoreConfig = false, Class = "Keybind", Callback = Settings.Callback }
+					local KeybindFunctions = { IgnoreConfig = false, Class = "Keybind", Callback = Settings.Callback, onBinded = Settings.onBinded }
 					local keybind = Instance.new("Frame")
 					keybind.Name = "Keybind"
 					keybind.AutomaticSize = Enum.AutomaticSize.Y
@@ -2280,60 +2280,50 @@ function MacLib:Window(Settings)
 				
 					UserInputService.InputEnded:Connect(function(inp)
 						if macLib ~= nil then
-							if focused and inp.KeyCode.Name ~= "Unknown" then
-								mousebutton1secure = 0
-								binded = inp.KeyCode
-								KeybindFunctions.Bind = binded
-								binderBox.Text = inp.KeyCode.Name
-								binderBox:ReleaseFocus()
-								if KeybindFunctions.onBinded then
-									KeybindFunctions.onBinded(binded)
-								end
-							elseif inp.KeyCode == binded then
-								mousebutton1secure = 0
-								if KeybindFunctions.Callback then
-									KeybindFunctions.Callback(binded)
-								end
-							end
-							if focused and inp.UserInputType.Name ~= "None" then
-								if inp.UserInputType == Enum.UserInputType.MouseButton1 then
-									mousebutton1secure = mousebutton1secure + 1
-
-									if mousebutton1secure == 2 then
-										mousebutton1secure = 0
-										binded = inp.UserInputType
-										KeybindFunctions.Bind = binded
-										binderBox.Text = inp.UserInputType.Name
-										binderBox:ReleaseFocus()
-										if KeybindFunctions.onBinded then
-											KeybindFunctions.onBinded(binded)
-										end
-									else
-										WindowFunctions:Notify({
-											Title = "Keybind",
-											Description = "Please confirm the mousebutton1 keybind.",
-											Lifetime = 3
-										})
+							if focused then
+								if inp.KeyCode.Name ~= "Unknown" then
+									mousebutton1secure = 0
+									binded = inp.KeyCode
+									KeybindFunctions.Bind = binded
+									binderBox.Text = inp.KeyCode.Name
+									binderBox:ReleaseFocus()
+									if KeybindFunctions.onBinded then
+										KeybindFunctions.onBinded(binded)
 									end
 
-								else
-										mousebutton1secure = 0
-										binded = inp.UserInputType
-										KeybindFunctions.Bind = binded
-										binderBox.Text = inp.UserInputType.Name
-										binderBox:ReleaseFocus()
-										if KeybindFunctions.onBinded then
-											KeybindFunctions.onBinded(binded)
+								elseif inp.UserInputType.Name ~= "None" then
+										if inp.UserInputType == Enum.UserInputType.MouseButton1 then
+											mousebutton1secure = mousebutton1secure + 1
+											if mousebutton1secure == 2 then
+												mousebutton1secure = 0
+												binded = inp.UserInputType
+												KeybindFunctions.Bind = binded
+												binderBox.Text = inp.UserInputType.Name
+												binderBox:ReleaseFocus()
+												if KeybindFunctions.onBinded then
+													KeybindFunctions.onBinded(binded)
+												end
+											else
+												WindowFunctions:Notify({
+													Title = "Keybind",
+													Description = "Please confirm the mousebutton1 keybind.",
+													Lifetime = 3
+												})
+											end
+										else
+											mousebutton1secure = 0
+											binded = inp.UserInputType
+											KeybindFunctions.Bind = binded
+											binderBox.Text = inp.UserInputType.Name
+											binderBox:ReleaseFocus()
+											if KeybindFunctions.onBinded then
+												KeybindFunctions.onBinded(binded)
+											end
 										end
 								end
+								
 
-								
-								
-							elseif inp.UserInputType == binded then
-								if KeybindFunctions.Callback then
-									mousebutton1secure = 0
-									KeybindFunctions.Callback(binded)
-								end
+
 							end
 						end
 					end)
@@ -5308,7 +5298,12 @@ function MacLib:Window(Settings)
 			end,
 			Load = function(Flag, data)
 				if MacLib.Options[Flag] and data.bind then
-					MacLib.Options[Flag]:Bind(Enum.KeyCode[data.bind])
+					local testBind = Enum.KeyCode[data.bind]
+					if testBind then
+						MacLib.Options[Flag]:Bind(Enum.KeyCode[data.bind])
+					else
+						MacLib.Options[Flag]:Bind(Enum.UserInputType[data.bind])
+					end
 				end
 			end
 		},
