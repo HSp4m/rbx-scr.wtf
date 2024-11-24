@@ -46,7 +46,7 @@ return {
     },
     ["7"] = {
       name = "Counter Blox: Reimagined V2",
-      id = "17586052747",
+      id = "84957635803107",
       version = "0.1",
       update_message = "This message will not be update anymore (same for the version)"
     }
