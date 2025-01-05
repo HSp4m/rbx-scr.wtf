@@ -1,3 +1,0 @@
--- Not needed
--- Loader version: 0.3.4
--- Patch notes: Update FileHandler system
